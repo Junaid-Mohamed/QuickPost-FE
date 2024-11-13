@@ -1,8 +1,6 @@
-
 import './App.css'
 
-import Navbar from './components/Navbar'
-import HomeScreen from './screens/HomeScreen'
+import LandingPage from './screens/LandingPage'
 
 
 function App() {
@@ -10,8 +8,7 @@ function App() {
 
   return (
     <div className='bg-gray-100 min-h-screen'>
-      <Navbar/>
-     <HomeScreen/>
+    <LandingPage/>
     </div>
   )
 }

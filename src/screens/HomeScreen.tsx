@@ -1,3 +1,4 @@
+import { GoogleLogin } from "@react-oauth/google";
 import { CgProfile } from "react-icons/cg";
 import { CiBookmark, CiSearch } from "react-icons/ci";
 import { FaPencil } from "react-icons/fa6";
@@ -6,6 +7,7 @@ import { SiAzuredataexplorer } from "react-icons/si";
 import { Link } from "react-router-dom";
 import FeedCard from "../components/FeedCard/FeedCard";
 import FollowerSuggestionCard from "../components/FollowerSuggestionCard/FollowerSuggestionCard";
+import Navbar from "../components/Navbar";
 
 
 
@@ -38,6 +40,8 @@ const sidebarMenuItems: SidebarButton[] = [
 
 const HomeScreen = () => {
     return(
+        <div>
+            <Navbar/>
         <div className="px-20 grid grid-cols-10 gap-8 mt-12 lg:grid-cols-12 " >
             <div className="col-span-3" >
                 <ul>
@@ -74,8 +78,10 @@ const HomeScreen = () => {
                     <FollowerSuggestionCard/>
                     <FollowerSuggestionCard/>
                     <FollowerSuggestionCard/>
+                    <GoogleLogin onSuccess={(cred)=> console.log(cred)} />
                 </div>
             </div>
+        </div>
         </div>
     )
 }
