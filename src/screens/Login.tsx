@@ -1,10 +1,47 @@
-import { useGoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import { useFormik } from 'formik';
 import React from 'react';
+import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import * as Yup from 'yup';
+import { baseURL } from '../config/constants';
+
+interface SigninResponse {
+  token: string
+}
 
 const LoginPage: React.FC = () => {
+
+  const handleSignInWithGoogle = async (token: string | undefined) =>{
+    try{
+      const response = await axios.post<SigninResponse>(`${baseURL}/api/auth/signin`, {token});
+      if(response.status === 200) {
+        toast.success("LogIn Success")
+        window.localStorage.setItem('QP-token', response.data.token);
+      }
+    }catch(error: unknown){
+      if(error instanceof Error){
+        toast.error(error.message)
+      }
+      
+    }
+  }
+
+  const handleSignInWithEmailPassword = async(formData: object) => {
+    try{
+      const response = await axios.post<SigninResponse>(`${baseURL}/api/auth/signin`, formData);
+      if(response.status === 200) {
+        toast.success("LogIn Success")
+        window.localStorage.setItem('QP-token', response.data.token);
+      }
+    }catch(error: unknown){
+      if(error instanceof Error){
+        toast.error(error.message)
+      }
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -18,18 +55,10 @@ const LoginPage: React.FC = () => {
       try {
         // const response = await axios.post('https://your-api-url.com/login', values);
         console.log('Login successful:', values);
+        handleSignInWithEmailPassword(values);
       } catch (error) {
         console.error('Login error:', error);
       }
-    },
-  });
-
-  const googleLogin = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log('Google login success:', tokenResponse);
-    },
-    onError: () => {
-      console.log('Google login failed');
     },
   });
 
@@ -68,20 +97,10 @@ const LoginPage: React.FC = () => {
           >
             Log In
           </button>
-
-          {/* Custom Google login button */}
-          <button
-            type="button"
-            onClick={() => googleLogin()}
-            className="w-full flex items-center justify-center p-3 bg-white border border-gray-300 rounded-lg shadow-md hover:bg-gray-100"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/1024px-Google_%22G%22_logo.svg.png"
-              alt="Google logo"
-              className="w-6 h-6 mr-3"
-            />
-            <span className="text-gray-700 font-medium">Log In with Google</span>
-          </button>
+          <GoogleLogin
+        onSuccess={(cred)=>handleSignInWithGoogle(cred.credential)}
+        shape="pill"
+      /> 
           <p className='flex justify-center gap-2' >Don't have an account? <Link className='underline text-blue-400' to={"/signup"}>Signup</Link></p>    
         </form>
       </div>

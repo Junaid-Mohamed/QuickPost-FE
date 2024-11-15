@@ -1,10 +1,49 @@
-import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 import { useFormik } from 'formik';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
+import { baseURL } from '../config/constants';
+// import { AxiosResponse } from 'axios';
+
+interface SignupResponse {
+  message: string
+}
 
 const Signup: React.FC = () => {
+
+  const navigate = useNavigate();
+
+  const handleSignUpWithGoogle = async (token : string | undefined) => {
+    try{
+      const response = await axios.post<SignupResponse>(`${baseURL}/api/auth/signup`, {token});
+      toast.success(response.data.message);
+      setTimeout(()=>{
+        navigate("/login")
+      },2000)
+    }catch(error: unknown){
+      if(error instanceof Error){
+        toast.error(error.message)
+      }
+    }
+  }
+
+  const handleSignUpWithEmailPassword = async(formData: object) => {
+    try{
+      const response = await axios.post<SignupResponse>(`${baseURL}/api/auth/signup`, formData);
+      toast.success(response.data.message);
+      setTimeout(()=>{
+        navigate("/login")
+      },2000)
+    }catch(error: unknown){
+      if(error instanceof Error){
+        toast.error(error.message)
+      }
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
       firstName: '',
@@ -20,15 +59,9 @@ const Signup: React.FC = () => {
     }),
     onSubmit: values => {
       console.log(values);
+      handleSignUpWithEmailPassword(values);
     }
   });
-
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const handleLoginError = (error: any): void => {
-    console.error('Google login failed', error);
-  };
-
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-300">
@@ -81,16 +114,11 @@ const handleLoginError = (error: any): void => {
           ) : null}
 
           <button type="submit" className="w-full p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600">Sign Up</button>
-          <p className='flex justify-center' >or</p>
-          <div className="flex justify-center">
+          <p className='flex justify-center' >or</p>     
       <GoogleLogin
-
-        onSuccess={(cred)=>console.log(cred)}
-        onError={(error)=>console.log(error)}
+        onSuccess={(cred)=>handleSignUpWithGoogle(cred.credential)}
         shape="pill"
       />   
-                
-    </div>
     <p className='flex justify-center gap-2' >Already have an account? <Link className='underline text-blue-400' to={"/login"}>Login</Link></p>    
         </form>
       </div>
