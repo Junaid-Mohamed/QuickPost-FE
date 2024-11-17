@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import FeedCard from "../components/FeedCard/FeedCard";
 import FollowerSuggestionCard from "../components/FollowerSuggestionCard/FollowerSuggestionCard";
 import Navbar from "../components/Navbar";
+import TweetCard from "../components/TweetCard/TweetCard";
 import { RootState } from "../redux/store";
 
 
@@ -44,7 +45,7 @@ const HomeScreen = () => {
     const user = useSelector((state: RootState)=> state.auth.user)
 
     return(
-        <div>
+        <div className="bg-gray-100" >
             <Navbar/>
         <div className="px-20 grid grid-cols-10 gap-8 mt-12 lg:grid-cols-12 " >
             <div className="col-span-3" >
@@ -56,7 +57,7 @@ const HomeScreen = () => {
                         </li>
                     ))}
                 </ul>
-                <Link to="" className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-xl " > <span><FaPencil /></span><span className="hidden md:block" >Create new Post</span></Link>
+                <button to="" className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-xl " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
                 <div className="mt-80 flex gap-2 items-center bg-gray-200 px-3 py-2 rounded-full">
                     {user? <img src="https://avatars.githubusercontent.com/u/64761352?v=4" height={50} width={50} className="rounded-full" alt="user" />:""}
                     <div>
@@ -66,6 +67,7 @@ const HomeScreen = () => {
                 </div>
             </div>
             <div className="col-span-6" >
+                <TweetCard/>
                 <FeedCard/> 
                 <FeedCard/> 
                 <FeedCard/> 
