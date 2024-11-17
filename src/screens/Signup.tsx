@@ -6,7 +6,6 @@ import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { baseURL } from '../config/constants';
-// import { AxiosResponse } from 'axios';
 
 interface SignupResponse {
   message: string

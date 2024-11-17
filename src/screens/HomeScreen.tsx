@@ -1,13 +1,14 @@
-import { GoogleLogin } from "@react-oauth/google";
 import { CgProfile } from "react-icons/cg";
 import { CiBookmark, CiSearch } from "react-icons/ci";
 import { FaPencil } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import { SiAzuredataexplorer } from "react-icons/si";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import FeedCard from "../components/FeedCard/FeedCard";
 import FollowerSuggestionCard from "../components/FollowerSuggestionCard/FollowerSuggestionCard";
 import Navbar from "../components/Navbar";
+import { RootState } from "../redux/store";
 
 
 
@@ -39,6 +40,9 @@ const sidebarMenuItems: SidebarButton[] = [
 
 
 const HomeScreen = () => {
+
+    const user = useSelector((state: RootState)=> state.auth.user)
+
     return(
         <div>
             <Navbar/>
@@ -53,7 +57,13 @@ const HomeScreen = () => {
                     ))}
                 </ul>
                 <Link to="" className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-xl " > <span><FaPencil /></span><span className="hidden md:block" >Create new Post</span></Link>
-
+                <div className="mt-80 flex gap-2 items-center bg-gray-200 px-3 py-2 rounded-full">
+                    {user? <img src="https://avatars.githubusercontent.com/u/64761352?v=4" height={50} width={50} className="rounded-full" alt="user" />:""}
+                    <div>
+                      <h3 className="" >{user?.firstName} {user?.lastName}</h3> 
+                      <p className="text-gray-400" >@{user.firstName}{user.lastName}</p> 
+                    </div>
+                </div>
             </div>
             <div className="col-span-6" >
                 <FeedCard/> 
@@ -78,7 +88,6 @@ const HomeScreen = () => {
                     <FollowerSuggestionCard/>
                     <FollowerSuggestionCard/>
                     <FollowerSuggestionCard/>
-                    <GoogleLogin onSuccess={(cred)=> console.log(cred)} />
                 </div>
             </div>
         </div>

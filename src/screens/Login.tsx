@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useFormik } from 'formik';
 import React from 'react';
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { baseURL } from '../config/constants';
 
@@ -13,12 +13,17 @@ interface SigninResponse {
 
 const LoginPage: React.FC = () => {
 
+  const navigate = useNavigate();
+
   const handleSignInWithGoogle = async (token: string | undefined) =>{
     try{
       const response = await axios.post<SigninResponse>(`${baseURL}/api/auth/signin`, {token});
       if(response.status === 200) {
         toast.success("LogIn Success")
-        window.localStorage.setItem('QP-token', response.data.token);
+        window.localStorage.setItem('QP-authToken', response.data.token);
+        setTimeout(()=>{
+            navigate('/home');
+        },1500)
       }
     }catch(error: unknown){
       if(error instanceof Error){
