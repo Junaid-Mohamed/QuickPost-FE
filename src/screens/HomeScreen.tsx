@@ -1,15 +1,17 @@
+import { useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
 import { CiBookmark, CiSearch } from "react-icons/ci";
 import { FaPencil } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import { SiAzuredataexplorer } from "react-icons/si";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-import FeedCard from "../components/FeedCard/FeedCard";
+import { useDispatch, useSelector } from "react-redux";
+
+import CreatePostCard from "../components/CreatePostCard/CreatePostCard";
+import PostCard from "../components/FeedCard/PostCard";
 import FollowerSuggestionCard from "../components/FollowerSuggestionCard/FollowerSuggestionCard";
 import Navbar from "../components/Navbar";
-import TweetCard from "../components/TweetCard/TweetCard";
-import { RootState } from "../redux/store";
+import { fetchPosts } from "../features/Posts/postSlice";
+import { AppDispatch, RootState } from "../redux/store";
 
 
 
@@ -42,7 +44,14 @@ const sidebarMenuItems: SidebarButton[] = [
 
 const HomeScreen = () => {
 
-    const user = useSelector((state: RootState)=> state.auth.user)
+    const user = useSelector((state: RootState)=> state?.auth.user)
+    const posts = useSelector((state:RootState)=> state.posts.posts)
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(()=>{
+        const token = localStorage.getItem("QP-authToken") as string;
+        dispatch(fetchPosts(token))
+    },[dispatch])
 
     return(
         <div className="bg-gray-100" >
@@ -57,7 +66,7 @@ const HomeScreen = () => {
                         </li>
                     ))}
                 </ul>
-                <button to="" className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-xl " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
+                <button className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-xl " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
                 <div className="mt-80 flex gap-2 items-center bg-gray-200 px-3 py-2 rounded-full">
                     {user? <img src="https://avatars.githubusercontent.com/u/64761352?v=4" height={50} width={50} className="rounded-full" alt="user" />:""}
                     <div>
@@ -67,12 +76,10 @@ const HomeScreen = () => {
                 </div>
             </div>
             <div className="col-span-6" >
-                <TweetCard/>
-                <FeedCard/> 
-                <FeedCard/> 
-                <FeedCard/> 
-                <FeedCard/> 
-                <FeedCard/> 
+                <CreatePostCard/>
+                {posts.map((post)=>(
+                    <PostCard key={post.id} post={post} />
+                ))}
                 
                 </div>
             <div className="hidden lg:col-span-3 lg:block" >

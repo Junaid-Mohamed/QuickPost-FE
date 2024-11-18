@@ -6,6 +6,8 @@ import { Navigate, useLocation } from "react-router-dom";
 import { baseURL } from "../../config/constants";
 import { RootState } from "../../redux/store";
 import { clearUser, setUser } from "./authSlice";
+// import { clearUser, setUser } from "./authSlice";
+
 
 interface SigninResponse {
     user: object
@@ -27,7 +29,6 @@ const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({children}) => {
                 setIsLoading(false)
                 return;
             }
-
             try{
                 const response = await axios.get<SigninResponse>(`${baseURL}/api/auth/signin`,{
                     headers: {Authorization: `Bearer ${token}`}
@@ -40,11 +41,12 @@ const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({children}) => {
             }finally{
                 setIsLoading(false);
             }
-
         }
-        verifyToken();
+        if(!isAuthenticated){
+            verifyToken();
+        }
+        
     },[dispatch])
-    console.log(isAuthenticated);
 
     if(isLoading){
         return <div>Loading....</div>
