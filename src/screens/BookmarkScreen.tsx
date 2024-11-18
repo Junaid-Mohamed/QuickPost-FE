@@ -1,14 +1,14 @@
 import React from "react";
 import QuickPostLayout from "../components/Layout/QuickPostLayout";
 
-const UserProfileScreen:React.FC = () => {
+const BookmarkScreen:React.FC = () => {
     return(
         <div>
             <QuickPostLayout>
-                <h1>This is user profile section</h1>
+                <h1>This is bookmark section</h1>
             </QuickPostLayout>
         </div>
     )
 }
 
-export default UserProfileScreen;
+export default BookmarkScreen;

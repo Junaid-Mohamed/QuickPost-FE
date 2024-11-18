@@ -7,6 +7,8 @@ import App from './App.tsx'
 import ProtectedRoute from './features/Auth/ProtectedRoute.tsx'
 import './index.css'
 import store from './redux/store.ts'
+import BookmarkScreen from './screens/BookmarkScreen.tsx'
+import ExploreScreen from './screens/ExploreScreen.tsx'
 import HomeScreen from './screens/HomeScreen.tsx'
 import Login from './screens/Login.tsx'
 import Signup from './screens/Signup.tsx'
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
   {
     path:'/profile',
     element: <ProtectedRoute><UserProfileScreen/></ProtectedRoute> 
+  },
+  {
+    path:'/explore',
+    element: <ProtectedRoute><ExploreScreen/></ProtectedRoute> 
+  },
+  {
+    path:'/bookmark',
+    element: <ProtectedRoute><BookmarkScreen/></ProtectedRoute> 
   },
   {
     path:'/signup',

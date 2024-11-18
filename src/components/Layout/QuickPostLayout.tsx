@@ -4,6 +4,7 @@ import { FaPencil } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import { SiAzuredataexplorer } from "react-icons/si";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
 import FollowerSuggestionCard from "../FollowerSuggestionCard/FollowerSuggestionCard";
 import Navbar from "../Navbar";
@@ -42,6 +43,11 @@ interface QuickPostProps{
 const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
 
     const user = useSelector((state: RootState)=> state?.auth.user)
+    const navigate = useNavigate();
+    const handleMenuClick = (page:string) => {
+        console.log(page);
+        navigate(`/${page.toLowerCase()}`)
+    }
 
     return(
         <div className="bg-gray-100" >
@@ -50,14 +56,14 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
         <div className="col-span-1 md:col-span-3" >
             <ul>
                 {sidebarMenuItems.map((item)=>(
-                    <li className="cursor-pointer text-lg gap-4 flex justify-start items-center my-4"  key={item.title}>
+                    <li onClick={()=>handleMenuClick(item.title)} className="cursor-pointer text-lg gap-4 flex justify-start items-center my-4"  key={item.title}>
                         <span className="text-xl md:text-lg ">{item.icon}</span>
                         <span className="hidden md:block">{item.title}</span>
                     </li>
                 ))}
             </ul>
             <button className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-sm " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
-            <div className="mt-80 md:flex md:gap-2 items-center bg-gray-200 md:px-3 py-2 rounded-full">
+            <div className="mt-80 md:flex md:gap-2 items-center :px-3 py-2 w-fit rounded-full">
                 {user? <img src="https://avatars.githubusercontent.com/u/64761352?v=4" height={50} width={50} className="rounded-full" alt="user" />:""}
                 <div className="hidden md:block" >
                   <h3 className="" >{user?.firstName} {user?.lastName}</h3> 
