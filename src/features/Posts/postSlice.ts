@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import toast from "react-hot-toast";
 import { baseURL } from "../../config/constants";
 
 // define the post type
@@ -164,8 +165,8 @@ export interface Post {
         })
         .addCase(createPost.fulfilled, (state, action) => {
           state.status = "success";
-          console.log(action.payload);
           state.posts.unshift(action.payload);
+          toast.success("Post created successfully.")
         })
         .addCase(createPost.rejected, (state, action) => {
           state.status = "error";

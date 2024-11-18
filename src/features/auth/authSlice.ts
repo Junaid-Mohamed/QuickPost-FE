@@ -15,6 +15,7 @@ const authSlice = createSlice({
         },
         clearUser(state){
             state.isAuthenticated = false;
+            localStorage.removeItem("QP-authToken")
         }
         
     }

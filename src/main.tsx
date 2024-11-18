@@ -10,6 +10,7 @@ import store from './redux/store.ts'
 import HomeScreen from './screens/HomeScreen.tsx'
 import Login from './screens/Login.tsx'
 import Signup from './screens/Signup.tsx'
+import UserProfileScreen from './screens/UserProfileScreen.tsx'
 
 const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ const router = createBrowserRouter([
   {
     path:'/home',
     element: <ProtectedRoute><HomeScreen/></ProtectedRoute> 
+  },
+  {
+    path:'/profile',
+    element: <ProtectedRoute><UserProfileScreen/></ProtectedRoute> 
   },
   {
     path:'/signup',

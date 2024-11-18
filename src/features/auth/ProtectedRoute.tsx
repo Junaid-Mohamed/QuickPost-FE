@@ -46,7 +46,7 @@ const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({children}) => {
             verifyToken();
         }
         
-    },[dispatch])
+    },[isAuthenticated, dispatch])
 
     if(isLoading){
         return <div>Loading....</div>

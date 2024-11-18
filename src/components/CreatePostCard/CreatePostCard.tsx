@@ -27,7 +27,7 @@ const CreatePostCard: React.FC = () => {
         if(!token) toast.error("login to create post");
         dispatch(createPost({content,token}))
         if(status === "success"){
-            toast.success("Post created successfully.")
+            setContent("");
         }
     }
     return(
