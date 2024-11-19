@@ -3,78 +3,6 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { baseURL } from "../../config/constants";
 
-// define the post type
-
-// interface Post{
-//     id: string;
-//     content: string;
-//     imageUrl?:string;
-//     author:{
-//         id: string;
-//         firstName: string;
-//         lastName?: string;
-//         email: string;
-//         profileImageURL?: string;
-//     };
-
-//     createdAt: string;
-//     updatedAt: string
-// }
-
-// //  define the state type
-// interface PostState{
-//     posts: Post[];
-//     status: "idle" | "loading.." | "success" | "error";
-//     error: string | null;
-// }
-
-// // Initial state
-// const initialState: PostState = {
-//     posts: [],
-//     status: 'idle',
-//     error: null
-// }
-
-// type ThunkAPI = {
-//     rejectValue: string;
-// }
-
-// export const fetchPosts = createAsyncThunk<Post[], string, ThunkAPI>(
-//     'posts/getPosts',
-//     async(token,{rejectWithValue}): Post[] =>{
-//     try{
-//         const response = await axios.get(`${baseURL}/api/posts`,{
-//             headers: {Authorization: `Bearer ${token}`}
-//         });
-//         return response.data as Post[];
-//     }catch(error){
-//         if(error instanceof Error){
-//             return rejectWithValue(error.message)
-//         }
-        
-//     }
-// })
-
-// export const postSlice = createSlice({
-//     name:'posts',
-//     initialState,
-//     reducers: {},
-//     extraReducers: (builder) => {
-//         // fetchPosts
-//         builder.addCase(fetchPosts.pending, (state)=>{
-//             state.status="loading.."
-//         })
-//         builder.addCase(fetchPosts.fulfilled, (state,action)=>{
-//             state.status="success";
-//             state.posts = action.payload;
-//         })
-//         builder.addCase(fetchPosts.rejected, (state, action)=>{
-//             state.status = "error";
-//             state.error = typeof action.payload === "string"? action.payload : "Failed to fetch posts";
-//     })
-//     }
-// })
-
 // Define the Post type
 export interface Post {
     id: string;
@@ -86,7 +14,7 @@ export interface Post {
       firstName: string;
       lastName: string;
       email: string;
-      imageUrl: string | null;
+      profileImageURL: string | null;
     };
     createdAt: string;
     updatedAt: string;
@@ -102,6 +30,23 @@ export interface Post {
     async (token, { rejectWithValue }) => {
       try {
         const response = await axios.get(`${baseURL}/api/posts`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        return response.data as Post[];
+      } catch (error) {
+        if (error instanceof Error) {
+          return rejectWithValue(error.message);
+        }
+        return rejectWithValue("An unknown error occurred");
+      }
+    }
+  );
+
+  export const fetchUserPosts = createAsyncThunk<Post[], string, ThunkAPI>(
+    "posts/getUserPosts",
+    async (token, { rejectWithValue }) => {
+      try {
+        const response = await axios.get(`${baseURL}/api/users/posts`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         return response.data as Post[];
@@ -137,6 +82,7 @@ export interface Post {
     name: "posts",
     initialState: {
       posts: [] as Post[],
+      userPosts: [] as Post[],
       status: "idle",
       error: null as string | null,
     },
@@ -153,6 +99,21 @@ export interface Post {
           state.posts = action.payload;
         })
         .addCase(fetchPosts.rejected, (state, action) => {
+          state.status = "error";
+          state.error = action.payload || "Failed to fetch posts";
+        });
+
+        //  for fetchUserPosts
+        builder
+        .addCase(fetchUserPosts.pending, (state) => {
+          state.status = "loading..";
+        //   state.error = null;
+        })
+        .addCase(fetchUserPosts.fulfilled, (state, action) => {
+          state.status = "success";
+          state.userPosts = action.payload;
+        })
+        .addCase(fetchUserPosts.rejected, (state, action) => {
           state.status = "error";
           state.error = action.payload || "Failed to fetch posts";
         });

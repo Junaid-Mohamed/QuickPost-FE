@@ -45,7 +45,6 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
     const user = useSelector((state: RootState)=> state?.auth.user)
     const navigate = useNavigate();
     const handleMenuClick = (page:string) => {
-        console.log(page);
         navigate(`/${page.toLowerCase()}`)
     }
 
