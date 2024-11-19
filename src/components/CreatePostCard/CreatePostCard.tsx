@@ -8,8 +8,12 @@ import { createPost } from "../../features/Posts/postSlice";
 import { AppDispatch, RootState } from "../../redux/store";
 
 
+interface CreatePostCardProps {
+    closeModal?: () => void;
+}
 
-const CreatePostCard: React.FC = () => {
+
+const CreatePostCard: React.FC<CreatePostCardProps> = ({closeModal}) => {
 
     const handleSelectImage = useCallback(() => {
         const input = document.createElement('input');
@@ -28,6 +32,7 @@ const CreatePostCard: React.FC = () => {
         dispatch(createPost({content,token}))
         if(status === "success"){
             setContent("");
+            closeModal();
         }
     }
     return(

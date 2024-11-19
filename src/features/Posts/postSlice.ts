@@ -78,6 +78,25 @@ export interface Post {
     }
   );
   
+  export const likePost = createAsyncThunk<Post, {postId: string, liked: boolean, token:string}, ThunkAPI>(
+    "posts/likePost",
+    async ({postId, liked, token}, {rejectWithValue}) =>{
+        try{
+            const response = await axios.put(`${baseURL}/api/posts/like`, {postId, liked},
+                {
+                    headers: {Authorization: `Bearer ${token}`}
+                }
+            )
+            return response.data as Post;
+        }catch(error){
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+              }
+              return rejectWithValue("An unknown error occurred"); 
+        }
+    }
+  )
+
   export const postSlice = createSlice({
     name: "posts",
     initialState: {
@@ -130,6 +149,24 @@ export interface Post {
           toast.success("Post created successfully.")
         })
         .addCase(createPost.rejected, (state, action) => {
+          state.status = "error";
+          state.error = action.payload || "Failed to fetch posts";
+        });
+
+        // for post likes
+        builder
+        .addCase(likePost.pending, (state) => {
+          state.status = "loading..";
+        })
+        .addCase(likePost.fulfilled, (state, action) => {
+          state.status = "success";
+          const updatedPost = action.payload;
+          const index = state.posts.findIndex((post)=> post.id === updatedPost.id)
+          if(index !== -1){
+            state.posts[index] = updatedPost;
+          }
+        })
+        .addCase(likePost.rejected, (state, action) => {
           state.status = "error";
           state.error = action.payload || "Failed to fetch posts";
         });

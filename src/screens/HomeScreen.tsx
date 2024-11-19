@@ -10,18 +10,13 @@ import { fetchPosts } from "../features/Posts/postSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
 
-
-
-
-
-
 const HomeScreen = () => {
 
     const posts = useSelector((state:RootState)=> state.posts.posts)
     const dispatch = useDispatch<AppDispatch>();
 
     const [filterModal,setFilterModal] = useState(false);
-    const [sortedPosts, setSortedPosts] = useState(posts);
+    const [sortedPosts, setSortedPosts] = useState([]);
 
     useEffect(()=>{
         const token = localStorage.getItem("QP-authToken") as string;
@@ -29,10 +24,10 @@ const HomeScreen = () => {
     },[dispatch])
     
     // console.log(new Date(posts[1].createdAt));
-    console.log(posts)
+    // console.log(getRelativeTime(posts[1].createdAt));
 
+    const postList = sortedPosts.length>0? sortedPosts : posts
     const handleSort = (criteria:string) => {
-        console.log(criteria)
         setFilterModal(false);
         /**
          * React's state should not be mutated directly. The posts array is assumed to come
@@ -80,7 +75,7 @@ const HomeScreen = () => {
         </div>
       </div>
       
-                {sortedPosts.map((post)=>(
+                {postList.map((post)=>(
                     <PostCard key={post.id} post={post} />
                 ))}
         </div>

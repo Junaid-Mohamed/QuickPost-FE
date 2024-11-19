@@ -1,13 +1,17 @@
+import { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { CiBookmark, CiSearch } from "react-icons/ci";
 import { FaPencil } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
+import { MdCancel } from "react-icons/md";
 import { SiAzuredataexplorer } from "react-icons/si";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store";
+import CreatePostCard from "../CreatePostCard/CreatePostCard";
 import FollowerSuggestionCard from "../FollowerSuggestionCard/FollowerSuggestionCard";
 import Navbar from "../Navbar";
+
 
 
 interface SidebarButton{
@@ -48,6 +52,12 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
         navigate(`/${page.toLowerCase()}`)
     }
 
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const toggleModal = () => {
+        setIsModalOpen((prev)=> !prev)
+    }
+
     return(
         <div className="bg-gray-100" >
         <Navbar/>
@@ -61,7 +71,7 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
                     </li>
                 ))}
             </ul>
-            <button className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-sm " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
+            <button onClick={toggleModal} className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-sm " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
             <div className="mt-80 md:flex md:gap-2 items-center :px-3 py-2 w-fit rounded-full">
                 {user? <img src="https://avatars.githubusercontent.com/u/64761352?v=4" height={50} width={50} className="rounded-full" alt="user" />:""}
                 <div className="hidden md:block" >
@@ -91,6 +101,21 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
             </div>
         </div>
     </div>
+    {
+        isModalOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+            <div className="bg-white p-4 rounded-lg w-3/4 sm:w-1/2 relative ">
+              <CreatePostCard closeModal={toggleModal} />
+              <button
+                onClick={toggleModal}
+                className="absolute sm:text-2xl top-3 right-3 text-red-400"
+              >
+                <MdCancel />
+              </button>
+            </div>
+          </div>
+        )
+    }
     </div>
     )
 }

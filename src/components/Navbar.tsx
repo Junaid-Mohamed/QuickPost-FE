@@ -20,7 +20,7 @@ const Navbar: React.FC = () =>{
     return(
         <div className="bg-white flex justify-between py-3 sm:px-20 px-7">
            <Link to="/" className=" text-1xl sm:text-3xl cursor-pointer" ><span className="text-red-400" >Quick</span>Post</Link> 
-           <IoIosLogOut onClick={handleLogout} className="text-xl sm:text-3xl" />
+           <IoIosLogOut onClick={handleLogout} className="text-xl sm:text-3xl cursor-pointer hover:text-red-400" />
         </div>
     )
 }
