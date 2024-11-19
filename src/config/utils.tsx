@@ -15,6 +15,6 @@ export const getRelativeTime = (createdAt: string) => {
       return `${diffInHours} hours`;
     }
     const diffInDays = Math.floor(diffInHours / 24);
-    return `${diffInDays} days`;
+    return `${diffInDays}  ${diffInDays>1?'days':'day'}`;
   };
   
