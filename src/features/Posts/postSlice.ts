@@ -97,6 +97,27 @@ export interface Post {
     }
   )
 
+  export const deleteUserPost = createAsyncThunk<Post,{postId: string, token: string}, ThunkAPI>(
+    "posts/deleteUserPost",
+    async ({postId,token},{rejectWithValue})=>{
+        try{
+            const response = await axios.delete(`${baseURL}/api/users/${postId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+            return response.data as Post;
+        }catch(error){
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+              }
+              return rejectWithValue("An unknown error occurred");
+            } 
+        }
+  )
+
   export const postSlice = createSlice({
     name: "posts",
     initialState: {
@@ -167,6 +188,22 @@ export interface Post {
           }
         })
         .addCase(likePost.rejected, (state, action) => {
+          state.status = "error";
+          state.error = action.payload || "Failed to fetch posts";
+        });
+
+        //  for deleting user post
+        builder
+        .addCase(deleteUserPost.pending, (state) => {
+          state.status = "loading..";
+        })
+        .addCase(deleteUserPost.fulfilled, (state, action) => {
+          state.status = "success";
+          const deletedPost = action.payload;
+          state.userPosts = state.userPosts.filter((post)=> post.id !== deletedPost.id)
+          toast.success("Post deleted successfully.")
+        })
+        .addCase(deleteUserPost.rejected, (state, action) => {
           state.status = "error";
           state.error = action.payload || "Failed to fetch posts";
         });

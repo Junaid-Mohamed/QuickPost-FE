@@ -37,7 +37,7 @@ const ExploreScreen:React.FC = () => {
                     </div>
                     <div>
                     {posts.map((post)=>(
-                    <PostCard key={post.id} post={post} />
+                    <PostCard key={post.id} post={post} page="explore" />
                 ))} 
                     </div>
                 </div>

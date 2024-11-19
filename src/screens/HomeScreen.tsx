@@ -6,7 +6,7 @@ import PostCard from "../components/FeedCard/PostCard";
 import QuickPostLayout from "../components/Layout/QuickPostLayout";
 
 import { GrSort } from "react-icons/gr";
-import { fetchPosts } from "../features/Posts/postSlice";
+import { fetchPosts, Post } from "../features/Posts/postSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
 
@@ -16,7 +16,7 @@ const HomeScreen = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     const [filterModal,setFilterModal] = useState(false);
-    const [sortedPosts, setSortedPosts] = useState([]);
+    const [sortedPosts, setSortedPosts] = useState<Post[]>([]);
 
     useEffect(()=>{
         const token = localStorage.getItem("QP-authToken") as string;
@@ -54,7 +54,7 @@ const HomeScreen = () => {
         <div className="flex justify-between items-center" >
         <h1 className="sm:text-2xl font-semibold" >Lastest post</h1>
         <div className="relative">
-          <GrSort className="cursor-pointer" onClick={()=> setFilterModal(true)} />
+          <GrSort className="cursor-pointer" onClick={()=> setFilterModal(!filterModal)} />
           { filterModal && 
           <div className="absolute top-full right-0 mt-2 bg-white shadow-lg border rounded w-40">
             <ul>
@@ -76,7 +76,7 @@ const HomeScreen = () => {
       </div>
       
                 {postList.map((post)=>(
-                    <PostCard key={post.id} post={post} />
+                    <PostCard key={post.id} post={post} page="home" />
                 ))}
         </div>
        </QuickPostLayout>

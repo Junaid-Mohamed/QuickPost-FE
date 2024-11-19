@@ -46,7 +46,7 @@ const UserProfileScreen:React.FC = () => {
                     <div className="mt-4" >
                         <h1 className="text-2xl font-bold" >Your Posts</h1>
                         {userPosts.map((post)=>(
-                            <PostCard key={post.id} post={post} />
+                            <PostCard key={post.id} post={post} page="profile" />
                         ))}
                     </div>
                 </div>
