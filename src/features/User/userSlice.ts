@@ -11,6 +11,7 @@ export interface User{
     firstName: string;
     lastName?: string;
     email:string;
+    bio?:string;
     profileImageURL?: string;
     bookmarkedPosts: Post[]
 }
