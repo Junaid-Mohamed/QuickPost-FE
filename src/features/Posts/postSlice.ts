@@ -118,6 +118,28 @@ export interface Post {
         }
   )
 
+export const editUserPost = createAsyncThunk<Post, {postId: string, editedContent: string, token: string}, ThunkAPI>(
+"posts/updateUserPost",
+async({postId, editedContent, token}, {rejectWithValue}) => {
+    try{
+        const response = await axios.put(`${baseURL}/api/users/${postId}`,
+            {editedContent},
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
+    return response.data as Post;
+    }catch(error){
+        if (error instanceof Error) {
+            return rejectWithValue(error.message);
+          }
+          return rejectWithValue("An unknown error occurred");
+        }  
+    }
+)
+
   export const postSlice = createSlice({
     name: "posts",
     initialState: {
@@ -205,8 +227,27 @@ export interface Post {
         })
         .addCase(deleteUserPost.rejected, (state, action) => {
           state.status = "error";
-          state.error = action.payload || "Failed to fetch posts";
+          state.error = action.payload || "Failed to delete post";
         });
+
+          // for user post update
+          builder
+          .addCase(editUserPost.pending, (state) => {
+            state.status = "loading..";
+          })
+          .addCase(editUserPost.fulfilled, (state, action) => {
+            state.status = "success";
+            const updatedPost = action.payload;
+            const index = state.userPosts.findIndex((post)=> post.id === updatedPost.id)
+            if(index !== -1){
+              state.userPosts[index] = updatedPost;
+            }
+            toast.success("Post edited successfully.")
+          })
+          .addCase(editUserPost.rejected, (state, action) => {
+            state.status = "error";
+            state.error = action.payload || "Failed to update user post";
+          });
     },
   });
   

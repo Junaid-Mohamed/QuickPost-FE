@@ -5,7 +5,7 @@ import { GoComment } from "react-icons/go";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { getRelativeTime } from "../../config/utils";
-import { deleteUserPost, likePost, Post } from "../../features/Posts/postSlice";
+import { deleteUserPost, editUserPost, likePost, Post } from "../../features/Posts/postSlice";
 import { AppDispatch } from "../../redux/store";
 
 
@@ -21,7 +21,8 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
 
     // for profile page delete/edit post
     const [postOptionModal, setPostOptionModal] = useState(false);
-    const [selectedOption, setSelectedOption] = useState("");
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedContent, setEditedContent] = useState(post.content)    
 
     const token = localStorage.getItem("QP-authToken") as string
     const dispatch = useDispatch<AppDispatch>();
@@ -39,7 +40,25 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
     }
 
     const handleDeletePost = (postId:string) => {
+        setPostOptionModal(false)
         dispatch(deleteUserPost({postId,token}))
+    }
+
+    const handleEditPost = () => {
+        setPostOptionModal(false);
+        setIsEditing(true)
+    }
+
+    const handleSaveEditedPost = () =>{
+        setPostOptionModal(false);
+        const postId = post.id;
+        dispatch(editUserPost({postId, editedContent,token}));
+        setIsEditing(false);
+    }
+
+    const handleCancelEdit = () => {
+        setIsEditing(false);
+        setEditedContent(post.content);
     }
 
     return(
@@ -60,7 +79,7 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
             <ul>
               <li
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                onClick={() => console.log("edit")}
+                onClick={handleEditPost }
               >
                 Edit
               </li>
@@ -76,7 +95,26 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
                         
                         </div>:<p></p>}
                         </div>
-                    <p>{post?.content}</p>
+                        { isEditing ? (
+                            <div>
+                                <textarea value={editedContent}
+                                 onChange={((e)=> setEditedContent(e.target.value))} 
+                                 className="w-full p-2 border rounded"
+                                 ></textarea>
+                                <div className="flex justify-end gap-2 mt-2" >
+                                    <button onClick={handleSaveEditedPost} className="bg-blue-500 text-white px-4 py-2 rounded" >
+                                        Save
+                                    </button>
+                                    <button onClick={handleCancelEdit} className="bg-gray-500 text-white px-4 py-2 rounded" >
+                                        Cancel
+                                    </button>
+                                </div> 
+                            </div>
+                        )
+                        :
+                         (<p>{post?.content}</p>)
+                        }
+                    
                     <div className="flex justify-between text-xl mt-5">
                         <div onClick={handleLike} className="flex justify-between gap-2 cursor-pointer " >
                         {liked?<FaHeart className="text-red-500" />:<CiHeart className="text-red-500" />}
