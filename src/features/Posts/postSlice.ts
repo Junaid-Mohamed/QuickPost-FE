@@ -21,7 +21,7 @@ export interface Post {
   }
   
   // Define the return type of the thunk
-  type ThunkAPI = {
+  export type ThunkAPI = {
     rejectValue: string;
   };
   

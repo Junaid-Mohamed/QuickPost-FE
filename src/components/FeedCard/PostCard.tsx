@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CiBookmark, CiHeart, CiShare2 } from "react-icons/ci";
 import { FaHeart } from "react-icons/fa";
 import { GoComment } from "react-icons/go";
 import { HiDotsHorizontal } from "react-icons/hi";
-import { useDispatch } from "react-redux";
+import { IoBookmark } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import { getRelativeTime } from "../../config/utils";
 import { deleteUserPost, editUserPost, likePost, Post } from "../../features/Posts/postSlice";
-import { AppDispatch } from "../../redux/store";
+import { updateBookmarkedPost } from "../../features/User/userSlice";
+import { AppDispatch, RootState } from "../../redux/store";
 
 
 interface PostCardProps {
@@ -16,8 +18,12 @@ interface PostCardProps {
 
 const PostCard: React.FC<PostCardProps> = ({post,page}) => {
     
+    const userBookmarkedPosts = useSelector((state:RootState)=> state.users.bookmarkPosts)
+    
     const [liked,setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(post.likes);
+    
+    const [isBookmarked, setIsBookmarked] = useState(false);
 
     // for profile page delete/edit post
     const [postOptionModal, setPostOptionModal] = useState(false);
@@ -26,6 +32,15 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
 
     const token = localStorage.getItem("QP-authToken") as string
     const dispatch = useDispatch<AppDispatch>();
+
+        // Effect to check if the post is bookmarked
+        useEffect(() => {
+            const isAlreadyBookmarked = userBookmarkedPosts.some(
+                (bookmarkedPost) => bookmarkedPost.id === post.id
+            );
+            setIsBookmarked(isAlreadyBookmarked);
+        }, [userBookmarkedPosts, post.id]);
+    
 
     const handleLike = () => {
         if(liked){
@@ -59,6 +74,15 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
     const handleCancelEdit = () => {
         setIsEditing(false);
         setEditedContent(post.content);
+    }
+
+    const handleBookmark = () =>{
+        const newBookmarkState = !isBookmarked;
+        setIsBookmarked(newBookmarkState);
+        const postId = post.id;
+        dispatch(updateBookmarkedPost({postId,isBookmarked:newBookmarkState,token}))
+        
+        
     }
 
     return(
@@ -127,7 +151,9 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
                         <CiShare2 />
                         </div>
                         <div>
-                        <CiBookmark className="cursor-pointer" />
+                        {isBookmarked? <IoBookmark onClick={handleBookmark} className="cursor-pointer" />: <CiBookmark onClick={handleBookmark} className="cursor-pointer" />
+                        }
+                        
                         </div>
                     </div>
                 </div>

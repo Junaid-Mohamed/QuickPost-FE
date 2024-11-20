@@ -73,7 +73,7 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
             </ul>
             <button onClick={toggleModal} className="flex md:text-lg gap-4 bg-red-400 px-3 py-3 w-fit rounded-full md:rounded-lg text-sm " > <span><FaPencil /></span><span className="hidden md:block text-white" >Create new Post</span></button>
             <div className="mt-80 md:flex md:gap-2 items-center :px-3 py-2 w-fit rounded-full">
-                {user? <img src="https://avatars.githubusercontent.com/u/64761352?v=4" height={50} width={50} className="rounded-full" alt="user" />:""}
+                {user? <img src={user.profileImageURL} height={50} width={50} className="rounded-full" alt="user" />:""}
                 <div className="hidden md:block" >
                   <h3 className="" >{user?.firstName} {user?.lastName}</h3> 
                   <p className="text-gray-400" >@{user.firstName}{user.lastName}</p> 
