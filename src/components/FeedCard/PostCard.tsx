@@ -84,7 +84,6 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
         
         
     }
-
     return(
         <div>
             <div className="grid grid-cols-12 my-4 border gap-2 border-white bg-white p-5">
@@ -126,17 +125,21 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
                                  className="w-full p-2 border rounded"
                                  ></textarea>
                                 <div className="flex justify-end gap-2 mt-2" >
-                                    <button onClick={handleSaveEditedPost} className="bg-blue-500 text-white px-4 py-2 rounded" >
-                                        Save
-                                    </button>
                                     <button onClick={handleCancelEdit} className="bg-gray-500 text-white px-4 py-2 rounded" >
                                         Cancel
+                                    </button>
+                                    <button onClick={handleSaveEditedPost} className="bg-blue-500 text-white px-4 py-2 rounded" >
+                                        Save
                                     </button>
                                 </div> 
                             </div>
                         )
                         :
-                         (<p>{post?.content}</p>)
+                         (<div>
+                            <p> {post?.content}</p>
+                            {post?.imageUrl? <img className="mt-2 rounded-md" src={post.imageUrl} alt="post-img" />: ""}
+                            </div>
+                         )
                         }
                     
                     <div className="flex justify-between text-xl mt-5">

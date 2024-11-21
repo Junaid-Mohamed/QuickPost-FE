@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseURL } from "../../config/constants";
 
-export interface User{
+export interface CurrentUser{
     id: string;
     email: string;
     firstName: string;
@@ -18,7 +18,7 @@ const initialState = {
     error: null as string | null
 }
 
-export const fetchUser = createAsyncThunk<User, string, {rejectValue:string}>(
+export const fetchUser = createAsyncThunk<CurrentUser, string, {rejectValue:string}>(
     "user/getCurrentUser",
     async (token, {rejectWithValue})=>{
         try{
@@ -27,7 +27,7 @@ export const fetchUser = createAsyncThunk<User, string, {rejectValue:string}>(
                     Authorization: `Bearer ${token}`
                 }
             })
-            return response.data as User;
+            return response.data as CurrentUser;
         }catch(error){
             if (error instanceof Error) {
                 return rejectWithValue(error.message);

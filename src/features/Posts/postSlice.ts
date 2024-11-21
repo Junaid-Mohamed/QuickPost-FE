@@ -59,14 +59,17 @@ export interface Post {
     }
   );
 
-  export const createPost = createAsyncThunk<Post,{content:string; token:string}, ThunkAPI>(
+  export const createPost = createAsyncThunk<Post,{formData:FormData; token:string}, ThunkAPI>(
     "posts/createPost",
-    async ({content, token}, { rejectWithValue }) => {
+    async ({formData, token}, { rejectWithValue }) => {
       try {
         const response = await axios.post(`${baseURL}/api/posts`, 
-        {content},
+        formData,
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            "Content-Type":"multipart/form-data",
+            Authorization: `Bearer ${token}` 
+            },
         });
         return response.data as Post;
       } catch (error) {
@@ -183,13 +186,12 @@ async({postId, editedContent, token}, {rejectWithValue}) => {
         //  for createPosts
         builder
         .addCase(createPost.pending, (state) => {
-          state.status = "loading..";
+          state.status = "posting...";
         //   state.error = null;
         })
         .addCase(createPost.fulfilled, (state, action) => {
           state.status = "success";
           state.posts.unshift(action.payload);
-          toast.success("Post created successfully.")
         })
         .addCase(createPost.rejected, (state, action) => {
           state.status = "error";
