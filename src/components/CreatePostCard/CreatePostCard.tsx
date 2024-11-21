@@ -20,7 +20,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({closeModal}) => {
     const handleSelectImage = useCallback(() => {
         const input = document.createElement('input');
         input.setAttribute("type","file");
-        input.setAttribute("accept","image/*");
+        // input.setAttribute("accept","image/*");
         input.click();
 
         input.onchange = (e) => {

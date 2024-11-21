@@ -61,8 +61,8 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
     return(
         <div className="bg-gray-100" >
         <Navbar/>
-    <div className="px-7 sm:px-20 grid grid-cols-10 gap-8 mt-12 lg:grid-cols-12 " >
-        <div className="col-span-1 md:col-span-3" >
+    <div className="h-screen px-7 sm:px-20 grid grid-cols-10 gap-8 mt-12 lg:grid-cols-12 " >
+        <div className="sticky top-0 col-span-1 md:col-span-3" >
             <ul>
                 {sidebarMenuItems.map((item)=>(
                     <li onClick={()=>handleMenuClick(item.title)} className="cursor-pointer text-lg gap-4 flex justify-start items-center my-4"  key={item.title}>
@@ -80,10 +80,10 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
                 </div>
             </div>
         </div>
-        <div className="col-span-9 md:col-span-7 lg:col-span-6" >
+        <div className="overflow-y-auto scrollbar-hide col-span-9 md:col-span-7 lg:col-span-6" >
           {props.children}
             </div>
-        <div className="hidden lg:col-span-3 lg:block" >
+        <div className="sticky top-0 hidden lg:col-span-3 lg:block" >
             <div className="border bg-white border-gray-400 flex justify-start gap-2 items-center my-2 px-2 py-1" >
                 <CiSearch className="text-xl" />     
                 <input className="text-sm w-full py-2 outline-none" type="text" placeholder="Search Posts, People, Anything"  />
