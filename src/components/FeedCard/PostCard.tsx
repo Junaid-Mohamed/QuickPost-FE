@@ -6,7 +6,7 @@ import { HiDotsHorizontal } from "react-icons/hi";
 import { IoBookmark } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getRelativeTime } from "../../config/utils";
+import { getMediaType, getRelativeTime } from "../../config/utils";
 import { deleteUserPost, editUserPost, likePost, Post } from "../../features/Posts/postSlice";
 import { fetchSecondaryUser, updateBookmarkedPost } from "../../features/User/userSlice";
 import { AppDispatch, RootState } from "../../redux/store";
@@ -27,6 +27,8 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
 
     const [isBookmarked, setIsBookmarked] = useState(false);
 
+    // get the media type for post if media exists.
+    const mediaType = getMediaType(post.resouceType, post.imageUrl)
     // for profile page delete/edit post
     const [postOptionModal, setPostOptionModal] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -148,7 +150,13 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
                         :
                          (<div>
                             <p> {post?.content}</p>
-                            {post?.imageUrl? <img className="mt-2 rounded-md" src={post.imageUrl} alt="post-img" />: ""}
+                            {post.imageUrl && mediaType === "image" && (
+                            <img src={post.imageUrl} alt="Post Media"  />
+                                )}
+                            {post.imageUrl && mediaType === "video" && (
+                            <video src={post.imageUrl} controls  className={`${postOptionModal? `pointer-events-none`:``}`} />
+                            )}
+
                             </div>
                          )
                         }

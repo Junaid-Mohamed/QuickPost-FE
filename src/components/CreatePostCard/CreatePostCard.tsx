@@ -20,14 +20,14 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({closeModal}) => {
     const handleSelectImage = useCallback(() => {
         const input = document.createElement('input');
         input.setAttribute("type","file");
-        // input.setAttribute("accept","image/*");
+        input.setAttribute("accept", "image/*,video/*"); // Allow both images and videos
         input.click();
 
         input.onchange = (e) => {
             const file = (e.target as HTMLInputElement).files?.[0];
             if(file){
                 setSelectedImage(file);
-                toast.success("image selected.")
+                toast.success(`${file.type.startsWith("image/") ? "Image" : "Video"} selected.`);
             }
         }
     },[])
@@ -65,9 +65,23 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({closeModal}) => {
                 </div>
                 <div className="col-span-11">
                     <textarea onChange={(e)=>setContent(e.target.value)} value={content} className="w-full bg-gray-100 p-3 " rows={4} name="tweet" placeholder="Write something interesting ..."></textarea>
-                    { selectedImage && <div className="mt-3" >
-                        <img src={URL.createObjectURL(selectedImage)} alt="selected." className="max-h-40 w-fit rounded-md"  />
-                        </div>}
+                    {selectedImage && (
+                        <div className="mt-3">
+                        {selectedImage.type.startsWith("image/") ? (
+                            <img
+                                src={URL.createObjectURL(selectedImage)}
+                                alt="selected"
+                                className="max-h-40 w-fit rounded-md"
+                            />
+                            ):(
+                            <video
+                                src={URL.createObjectURL(selectedImage)}
+                                controls
+                                className="max-h-40 w-fit rounded-md"
+                            />
+                        )}
+                        </div>
+                    )}
                     <div className="flex justify-between text-lg mt-3 ">
                         <div className="flex justify-between gap-3">
                         <FaImage onClick={handleSelectImage} />

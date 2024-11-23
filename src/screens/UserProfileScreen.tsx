@@ -21,10 +21,9 @@ const UserProfileScreen:React.FC = () => {
     const secondaryUser = useSelector((state:RootState)=> state?.users.secondaryUser);
     const userPosts = useSelector((state:RootState)=> state?.posts.userPosts);
     const {status}  = useSelector((state:RootState)=> state?.users)
-    const memoizedStatus = useMemo(()=> status, [status])
     const dispatch = useDispatch<AppDispatch>();
     // console.log('current user',user);
-    console.log('secondary user', secondaryUser)
+    // console.log('secondary user', secondaryUser)
     const [isEditing,setIsEditing] = useState(false);
     const [bio,setBio] = useState(user.bio)
     const [profileImage, setProfileImg] = useState("");

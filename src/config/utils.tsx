@@ -18,3 +18,14 @@ export const getRelativeTime = (createdAt: string) => {
     return `${diffInDays}  ${diffInDays>1?'days':'day'}`;
   };
   
+  const isImage = (url: string) => /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  const isVideo = (url: string) => /\.(mp4|mov|webm|mkv)$/i.test(url);
+  
+export const getMediaType = (resourceType: string | null, url: string) => {
+      if (resourceType === "image") return "image";
+      if (resourceType === "video") return "video";
+      if (isImage(url)) return "image";
+      if (isVideo(url)) return "video";
+      return null; // Unknown type or no media
+  };
+  

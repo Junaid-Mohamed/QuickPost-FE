@@ -64,7 +64,8 @@ const Signup: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-300">
       <div className="bg-white p-6 rounded-lg shadow-lg transform transition hover:scale-105 max-w-md w-full">
-        <h2 className="text-2xl font-semibold text-center mb-6">Sign Up</h2>
+      <h1 className='text-2xl sm:text-4xl text-center  my-5 ' ><span className='text-red-400' >Quick</span>Post</h1>
+      <h2 className="text-lg sm:text-2xl font-semibold text-center mb-6">Sign Up</h2>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
           <input
             type="text"
