@@ -18,6 +18,26 @@ export interface User{
 }
 
 
+export const fetchSecondaryUser = createAsyncThunk<User, {userId:string,token:string}, {rejectValue:string}>(
+    "user/getSecondaryUser",
+    async ({userId,token}, {rejectWithValue})=>{
+        try{
+            const response = await axios.get(`${baseURL}/api/users/user/${userId}`,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            return response.data as User;
+        }catch(error){
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+              }
+              return rejectWithValue("An unknown error occurred");
+        }
+    }
+)
+
+
 
 export const fetchBookmarkedPost = createAsyncThunk<User[], {token: string},ThunkAPI>(
     "users/fetchBookmarkedPosts", 
@@ -67,7 +87,6 @@ export const updateUserProfile = createAsyncThunk<CurrentUser, {profileImage: st
     "users/updateUserProfile",
     async ({profileImage, bio, token}, {rejectWithValue})=>{
         try{
-            console.log("inside user slice", profileImage, bio)
             const response = await axios.put(`${baseURL}/api/users/profile/userprofile`,
                 {profileImage,bio},
                 {headers: { Authorization: `Bearer ${token}`}}
@@ -77,8 +96,26 @@ export const updateUserProfile = createAsyncThunk<CurrentUser, {profileImage: st
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
               }
-              return rejectWithValue("An unknown error occurred"); 
+              return rejectWithValue("An unknown error occurred");
         }
+    }
+)
+
+export const updateUserFollower = createAsyncThunk<string,{from:string,to:string,follow:boolean,token:string},ThunkAPI>(
+    "users/updateFollowes",
+    async({from,to,follow,token},{rejectWithValue})=>{
+        try{
+            const response = await axios.put(`${baseURL}/api/users/profile/follows`,
+                {from,to,follow},
+                {headers:{Authorization: `Bearer ${token}`}});
+                return response.data as string
+        }catch(error){
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+              }
+              return rejectWithValue("An unknown error occurred");
+        }
+       
     }
 )
 
@@ -86,6 +123,7 @@ export const userSlice = createSlice({
     name:"user",
     initialState: {
         user: null,
+        secondaryUser:null,
         bookmarkPosts: [] as Post[],
         status: "idle",
         error: null as string | null
@@ -137,6 +175,32 @@ export const userSlice = createSlice({
           state.error = action.payload || "Failed to fetch posts";
         });
 
+        builder
+        .addCase(fetchSecondaryUser.pending, (state) => {
+            state.status = "loading..";
+        })
+        .addCase(fetchSecondaryUser.fulfilled, (state, action) => {
+            state.status = "success";
+            state.secondaryUser = action.payload;
+        })
+        .addCase(fetchSecondaryUser.rejected, (state, action) => {
+            state.status = "error";
+            state.error = action.payload || "Failed to fetch posts";
+        });
+        //  to update user followers
+        builder
+        .addCase(updateUserFollower.pending, (state) => {
+          state.status = "loading..";
+        })
+        .addCase(updateUserFollower.fulfilled, (state, action) => {
+          state.status = "success";   
+        //    not using this action anywhere.
+        console.log(action.payload)
+        })
+        .addCase(updateUserFollower.rejected, (state, action) => {
+          state.status = "error";
+          state.error = action.payload || "Failed to fetch posts";
+        });
 
     }
 

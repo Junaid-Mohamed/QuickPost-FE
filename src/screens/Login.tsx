@@ -38,7 +38,10 @@ const LoginPage: React.FC = () => {
       const response = await axios.post<SigninResponse>(`${baseURL}/api/auth/signin`, formData);
       if(response.status === 200) {
         toast.success("LogIn Success")
-        window.localStorage.setItem('QP-token', response.data.token);
+        window.localStorage.setItem('QP-authToken', response.data.token);
+        setTimeout(()=>{
+          navigate('/home');
+      },1500)
       }
     }catch(error: unknown){
       if(error instanceof Error){
@@ -59,7 +62,6 @@ const LoginPage: React.FC = () => {
     onSubmit: async (values) => {
       try {
         // const response = await axios.post('https://your-api-url.com/login', values);
-        console.log('Login successful:', values);
         handleSignInWithEmailPassword(values);
       } catch (error) {
         console.error('Login error:', error);

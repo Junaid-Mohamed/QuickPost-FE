@@ -10,6 +10,7 @@ const BookmarkScreen:React.FC = () => {
     const userBookmarkedPosts = useSelector((state:RootState)=> state.users.bookmarkPosts)
     const dispatch = useDispatch<AppDispatch>();
 
+    // console.log(userBookmarkedPosts)
     useEffect(()=>{
         const token = localStorage.getItem("QP-authToken") as string;
         dispatch(fetchBookmarkedPost({token})) 

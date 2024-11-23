@@ -28,6 +28,10 @@ const router = createBrowserRouter([
     element: <ProtectedRoute><UserProfileScreen/></ProtectedRoute> 
   },
   {
+    path:'/profile/:userId',
+    element: <ProtectedRoute><UserProfileScreen/></ProtectedRoute> 
+  },
+  {
     path:'/explore',
     element: <ProtectedRoute><ExploreScreen/></ProtectedRoute> 
   },

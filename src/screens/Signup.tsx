@@ -57,7 +57,6 @@ const Signup: React.FC = () => {
       password: Yup.string().min(6, 'Password should be at least 6 characters').required('Password is required')
     }),
     onSubmit: values => {
-      console.log(values);
       handleSignUpWithEmailPassword(values);
     }
   });

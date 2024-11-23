@@ -36,7 +36,6 @@ const ProtectedRoute: React.FC<{children: React.ReactNode}> = ({children}) => {
                 dispatch(setUser(response.data.user))
             }catch(error){
                 console.log(error);
-                localStorage.removeItem("QP-authToken");
                 dispatch(clearUser());
             }finally{
                 setIsLoading(false);

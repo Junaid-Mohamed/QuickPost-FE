@@ -5,9 +5,10 @@ import { GoComment } from "react-icons/go";
 import { HiDotsHorizontal } from "react-icons/hi";
 import { IoBookmark } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getRelativeTime } from "../../config/utils";
 import { deleteUserPost, editUserPost, likePost, Post } from "../../features/Posts/postSlice";
-import { updateBookmarkedPost } from "../../features/User/userSlice";
+import { fetchSecondaryUser, updateBookmarkedPost } from "../../features/User/userSlice";
 import { AppDispatch, RootState } from "../../redux/store";
 
 
@@ -19,10 +20,11 @@ interface PostCardProps {
 const PostCard: React.FC<PostCardProps> = ({post,page}) => {
     
     const userBookmarkedPosts = useSelector((state:RootState)=> state.users.bookmarkPosts)
-    
+    const currentUser = useSelector((state:RootState)=> state.auth.user);
     const [liked,setLiked] = useState(false);
     const [likesCount, setLikesCount] = useState(post.likes);
-    
+    const navigate = useNavigate();
+
     const [isBookmarked, setIsBookmarked] = useState(false);
 
     // for profile page delete/edit post
@@ -80,15 +82,24 @@ const PostCard: React.FC<PostCardProps> = ({post,page}) => {
         const newBookmarkState = !isBookmarked;
         setIsBookmarked(newBookmarkState);
         const postId = post.id;
-        dispatch(updateBookmarkedPost({postId,isBookmarked:newBookmarkState,token}))
-        
+        dispatch(updateBookmarkedPost({postId,isBookmarked:newBookmarkState,token}))  
         
     }
+    // console.log(`Current User`,currentUser)
+    // console.log(`posts`, post);
+
+    const handleOtherUserProfileClick = (userId) =>{
+        // console.log(userId);
+        dispatch(fetchSecondaryUser({userId,token}))
+        navigate(`/profile/${userId}`);
+    }
+
     return(
         <div>
             <div className="grid grid-cols-12 my-4 border gap-2 border-white bg-white p-5">
                 <div className="col-span-1">
-                    <img src={post?.author?.profileImageURL? `${post?.author?.profileImageURL}`:`https://placehold.co/50?text=user`} alt="user-image" className="rounded-full" width={50} height={50}/>
+                    <img onClick={currentUser?.id !== post?.authorId ? ()=>{ handleOtherUserProfileClick(post?.authorId)}:undefined} 
+                    src={post?.author?.profileImageURL? `${post?.author?.profileImageURL}`:`https://placehold.co/50?text=user`} alt="user-image" className={`rounded-full ${(currentUser?.id !== post?.authorId) ? "cursor-pointer":""}`} width={50} height={50}/>
                 </div>
                 <div className="col-span-11">
                     <div className="flex justify-between items-center relative">

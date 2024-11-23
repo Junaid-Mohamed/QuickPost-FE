@@ -42,11 +42,11 @@ export interface Post {
     }
   );
 
-  export const fetchUserPosts = createAsyncThunk<Post[], string, ThunkAPI>(
+  export const fetchUserPosts = createAsyncThunk<Post[], {userId:string, token: string}, ThunkAPI>(
     "posts/getUserPosts",
-    async (token, { rejectWithValue }) => {
+    async ({userId,token}, { rejectWithValue }) => {
       try {
-        const response = await axios.get(`${baseURL}/api/users/posts`, {
+        const response = await axios.get(`${baseURL}/api/users/posts/user/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         return response.data as Post[];
