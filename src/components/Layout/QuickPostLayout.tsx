@@ -66,10 +66,9 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
         dispatch(fetchAllUsers({token}))
     },[dispatch])
 
-    // console.log('allUsers',allUsers);
-
-    const newFollowers = allUsers.filter((u)=> u.followings.length>0? !u.followings.some((follower)=>follower.followerId === user.id): false);
-    // console.log('following data',followingData)
+    console.log('allUsers',allUsers);
+    const newFollowers = allUsers.filter((u)=> u.followings.length>0? !u.followings.some((follower)=>follower.followerId === user.id): true);
+    console.log('following data',newFollowers)
     // const newFollowers = allUsers.filter((u)=> ) followingData
     return(
         <div className="bg-gray-100" >
@@ -93,10 +92,10 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
                 </div>
             </div>
         </div>
-        <div className="overflow-y-auto scrollbar-hide col-span-9 md:col-span-7 lg:col-span-6" >
+        <div className="overflow-y-auto min-h-screen scrollbar-hide col-span-9 md:col-span-7 lg:col-span-6" >
           {props.children}
             </div>
-        <div className="sticky top-0 hidden lg:col-span-3 lg:block" >
+        <div className="overflow-y-auto hidden lg:col-span-3 lg:block" >
             <div className="border bg-white border-gray-400 flex justify-start gap-2 items-center my-2 px-2 py-1" >
                 <CiSearch className="text-xl" />     
                 <input className="text-sm w-full py-2 outline-none" type="text" placeholder="Search Posts, People, Anything"  />
