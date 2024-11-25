@@ -37,7 +37,24 @@ export const fetchSecondaryUser = createAsyncThunk<User, {userId:string,token:st
     }
 )
 
-
+export const fetchAllUsers = createAsyncThunk<User[], {token:string}, {rejectValue:string}>(
+    "user/getAllUsers",
+    async ({token}, {rejectWithValue})=>{
+        try{
+            const response = await axios.get(`${baseURL}/api/users/allusers`,{
+                headers:{
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            return response.data as User[];
+        }catch(error){
+            if (error instanceof Error) {
+                return rejectWithValue(error.message);
+              }
+              return rejectWithValue("An unknown error occurred");
+        }
+    }
+)
 
 export const fetchBookmarkedPost = createAsyncThunk<User[], {token: string},ThunkAPI>(
     "users/fetchBookmarkedPosts", 
@@ -123,6 +140,7 @@ export const userSlice = createSlice({
     name:"user",
     initialState: {
         user: null,
+        allUsers: [] as User[],
         secondaryUser:null,
         bookmarkPosts: [] as Post[],
         status: "idle",
@@ -161,6 +179,21 @@ export const userSlice = createSlice({
           state.error = action.payload || "Failed to fetch posts";
         });
 
+        // fetch all users
+        builder
+        .addCase(fetchAllUsers.pending, (state) => {
+          state.status = "loading..";
+        })
+        .addCase(fetchAllUsers.fulfilled, (state, action) => {
+          state.status = "success";
+        //    this state update should not be like this, it should be like add when bookmarked and filter when removed bookmark
+          state.allUsers = action.payload;
+        })
+        .addCase(fetchAllUsers.rejected, (state, action) => {
+          state.status = "error";
+          state.error = action.payload || "Failed to fetch all users";
+        });
+
         builder
         .addCase(updateUserProfile.pending, (state) => {
           state.status = "loading..";
@@ -195,7 +228,7 @@ export const userSlice = createSlice({
         .addCase(updateUserFollower.fulfilled, (state, action) => {
           state.status = "success";   
         //    not using this action anywhere.
-        console.log(action.payload)
+        // console.log(action.payload)
         })
         .addCase(updateUserFollower.rejected, (state, action) => {
           state.status = "error";

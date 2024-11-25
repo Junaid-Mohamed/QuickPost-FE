@@ -16,10 +16,12 @@ const UserProfileScreen:React.FC = () => {
     const location = useLocation()
     const {userId} = useParams();
     const user = useSelector((state: RootState)=> state?.auth.user)
+    // console.log("Primary user",user)
     // console.log(user)
     const [isFollowing, setIsFollowing] = useState(false);
     const secondaryUser = useSelector((state:RootState)=> state?.users.secondaryUser);
-    const userPosts = useSelector((state:RootState)=> state?.posts.userPosts);
+    // console.log("secondary user",secondaryUser);
+    const {userPosts,postSliceStatus} = useSelector((state:RootState)=> state?.posts);
     const {status}  = useSelector((state:RootState)=> state?.users)
     const dispatch = useDispatch<AppDispatch>();
     // console.log('current user',user);
@@ -44,17 +46,22 @@ const UserProfileScreen:React.FC = () => {
       ];
       
     useEffect(()=>{
+      // console.log("Use state", isFollowing);
+      setIsFollowing(true);
         const token = localStorage.getItem("QP-authToken") as string;
         if(secondaryUser === null || userPosts === null){
             dispatch(fetchSecondaryUser({userId, token}))
             dispatch(fetchUserPosts({userId:`${isCurrentUserProfile?`${user?.id}`:`${userId}`}`,token}));
         }
-            dispatch(fetchUserPosts({userId:`${profileUser?.id}`,token}));
+            dispatch(fetchUserPosts({userId:`${isCurrentUserProfile?`${user?.id}`:`${userId}`}`,token}));
             dispatch(fetchUser(token));
         //  following secondary user check.
+            // console.log(secondaryUser)
             if(status === "success" && location.pathname === `/profile/${userId}`){
                 const followingData = secondaryUser?.followings
-                const followinStatus =  followingData.length > 0 ? followingData.some((follower)=> follower.followingId === userId): false;
+
+                const followinStatus =  followingData.length > 0 ? followingData.some((follower)=> follower.followerId === user.id): false;
+                // console.log(followinStatus);
                 setIsFollowing(followinStatus);
             }
     },[dispatch,secondaryUser])
@@ -150,10 +157,10 @@ const UserProfileScreen:React.FC = () => {
               </div>
             </div>
           )}
-                   {status === "success" ?  <div className="mt-4" >
+                   {postSliceStatus === "success" ?  <div className="mt-4" >
                         <h1 className="text-2xl font-bold" >{isCurrentUserProfile? `Your Posts`:`${profileUser?.firstName}'s Posts`}</h1>
                         {userPosts.map((post)=>(
-                            <PostCard key={post.id} post={post} page={`${isCurrentUserProfile?'profile':`profile/${profileUser.id}`}`} />
+                            <PostCard key={post.id} post={post} page={`${isCurrentUserProfile?'profile':`profile/${userId}`}`} />
                         ))}
                     </div>: null}
                 </div>

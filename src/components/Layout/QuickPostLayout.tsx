@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { CiBookmark, CiSearch } from "react-icons/ci";
 import { FaPencil } from "react-icons/fa6";
 import { IoHomeOutline } from "react-icons/io5";
 import { MdCancel } from "react-icons/md";
 import { SiAzuredataexplorer } from "react-icons/si";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../../redux/store";
+import { fetchAllUsers } from "../../features/User/userSlice";
+import { AppDispatch, RootState } from "../../redux/store";
 import CreatePostCard from "../CreatePostCard/CreatePostCard";
 import FollowerSuggestionCard from "../FollowerSuggestionCard/FollowerSuggestionCard";
 import Navbar from "../Navbar";
@@ -47,17 +48,29 @@ interface QuickPostProps{
 const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
 
     const user = useSelector((state: RootState)=> state?.auth.user)
+    // console.log("User", user);
+    const token = localStorage.getItem("QP-authToken") as string
     const navigate = useNavigate();
     const handleMenuClick = (page:string) => {
         navigate(`/${page.toLowerCase()}`)
     }
-
+    const dispatch = useDispatch<AppDispatch>();
+    const allUsers = useSelector((state:RootState)=> state?.users.allUsers);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const toggleModal = () => {
         setIsModalOpen((prev)=> !prev)
     }
 
+    useEffect(()=>{
+        dispatch(fetchAllUsers({token}))
+    },[dispatch])
+
+    // console.log('allUsers',allUsers);
+
+    const newFollowers = allUsers.filter((u)=> u.followings.length>0? !u.followings.some((follower)=>follower.followerId === user.id): false);
+    // console.log('following data',followingData)
+    // const newFollowers = allUsers.filter((u)=> ) followingData
     return(
         <div className="bg-gray-100" >
         <Navbar/>
@@ -94,10 +107,9 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
                     <h5 className="text-red-300 font-bold " >Show More</h5>
                 </div>
                 <hr />
-                <FollowerSuggestionCard/>
-                <FollowerSuggestionCard/>
-                <FollowerSuggestionCard/>
-                <FollowerSuggestionCard/>
+                {newFollowers.map((user)=>(
+                    <FollowerSuggestionCard key={user.id} user={user} />
+                ))}
             </div>
         </div>
     </div>

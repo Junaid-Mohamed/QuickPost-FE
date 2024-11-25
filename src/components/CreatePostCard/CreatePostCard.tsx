@@ -34,7 +34,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({closeModal}) => {
 
     
     const user = useSelector((state:RootState)=> state.auth.user);
-    const {status} = useSelector((state:RootState)=> state.posts);
+    const {postSliceStatus} = useSelector((state:RootState)=> state.posts);
     const dispatch = useDispatch<AppDispatch>();
 
     const handleOnClickPost = async () =>{
@@ -50,7 +50,7 @@ const CreatePostCard: React.FC<CreatePostCardProps> = ({closeModal}) => {
         const toastId = toast.loading("Posting....");
 
         await dispatch(createPost({formData,token}))
-        if(status === "success"){
+        if(postSliceStatus === "success"){
             setContent("");
             setSelectedImage(null);
             closeModal?.();

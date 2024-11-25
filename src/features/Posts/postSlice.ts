@@ -148,7 +148,7 @@ async({postId, editedContent, token}, {rejectWithValue}) => {
     initialState: {
       posts: [] as Post[],
       userPosts: [] as Post[],
-      status: "idle",
+      postSliceStatus: "idle",
       error: null as string | null,
     },
     reducers: {},
@@ -156,55 +156,55 @@ async({postId, editedContent, token}, {rejectWithValue}) => {
         //  for fetchPosts
       builder
         .addCase(fetchPosts.pending, (state) => {
-          state.status = "loading..";
+          state.postSliceStatus = "loading..";
         //   state.error = null;
         })
         .addCase(fetchPosts.fulfilled, (state, action) => {
-          state.status = "success";
+          state.postSliceStatus = "success";
           state.posts = action.payload;
         })
         .addCase(fetchPosts.rejected, (state, action) => {
-          state.status = "error";
+          state.postSliceStatus = "error";
           state.error = action.payload || "Failed to fetch posts";
         });
 
         //  for fetchUserPosts
         builder
         .addCase(fetchUserPosts.pending, (state) => {
-          state.status = "loading..";
+          state.postSliceStatus = "loading..";
         //   state.error = null;
         })
         .addCase(fetchUserPosts.fulfilled, (state, action) => {
-          state.status = "success";
+          state.postSliceStatus = "success";
           state.userPosts = action.payload;
         })
         .addCase(fetchUserPosts.rejected, (state, action) => {
-          state.status = "error";
+          state.postSliceStatus = "error";
           state.error = action.payload || "Failed to fetch posts";
         });
 
         //  for createPosts
         builder
         .addCase(createPost.pending, (state) => {
-          state.status = "posting...";
+          state.postSliceStatus = "posting...";
         //   state.error = null;
         })
         .addCase(createPost.fulfilled, (state, action) => {
-          state.status = "success";
+          state.postSliceStatus = "success";
           state.posts.unshift(action.payload);
         })
         .addCase(createPost.rejected, (state, action) => {
-          state.status = "error";
+          state.postSliceStatus = "error";
           state.error = action.payload || "Failed to fetch posts";
         });
 
         // for post likes
         builder
         .addCase(likePost.pending, (state) => {
-          state.status = "loading..";
+          state.postSliceStatus = "loading..";
         })
         .addCase(likePost.fulfilled, (state, action) => {
-          state.status = "success";
+          state.postSliceStatus = "success";
           const updatedPost = action.payload;
           const index = state.posts.findIndex((post)=> post.id === updatedPost.id)
           if(index !== -1){
@@ -212,33 +212,33 @@ async({postId, editedContent, token}, {rejectWithValue}) => {
           }
         })
         .addCase(likePost.rejected, (state, action) => {
-          state.status = "error";
+          state.postSliceStatus = "error";
           state.error = action.payload || "Failed to fetch posts";
         });
 
         //  for deleting user post
         builder
         .addCase(deleteUserPost.pending, (state) => {
-          state.status = "loading..";
+          state.postSliceStatus = "loading..";
         })
         .addCase(deleteUserPost.fulfilled, (state, action) => {
-          state.status = "success";
+          state.postSliceStatus = "success";
           const deletedPost = action.payload;
           state.userPosts = state.userPosts.filter((post)=> post.id !== deletedPost.id)
           toast.success("Post deleted successfully.")
         })
         .addCase(deleteUserPost.rejected, (state, action) => {
-          state.status = "error";
+          state.postSliceStatus = "error";
           state.error = action.payload || "Failed to delete post";
         });
 
           // for user post update
           builder
           .addCase(editUserPost.pending, (state) => {
-            state.status = "loading..";
+            state.postSliceStatus = "loading..";
           })
           .addCase(editUserPost.fulfilled, (state, action) => {
-            state.status = "success";
+            state.postSliceStatus = "success";
             const updatedPost = action.payload;
             const index = state.userPosts.findIndex((post)=> post.id === updatedPost.id)
             if(index !== -1){
@@ -247,7 +247,7 @@ async({postId, editedContent, token}, {rejectWithValue}) => {
             toast.success("Post edited successfully.")
           })
           .addCase(editUserPost.rejected, (state, action) => {
-            state.status = "error";
+            state.postSliceStatus = "error";
             state.error = action.payload || "Failed to update user post";
           });
     },
