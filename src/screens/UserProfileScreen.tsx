@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import QuickPostLayout from "../components/Layout/QuickPostLayout";
 
@@ -27,7 +27,7 @@ const UserProfileScreen:React.FC = () => {
     // console.log('current user',user);
     // console.log('secondary user', secondaryUser)
     const [isEditing,setIsEditing] = useState(false);
-    const [bio,setBio] = useState(user.bio)
+    const [bio,setBio] = useState(user?.bio)
     const [profileImage, setProfileImg] = useState("");
 
     const [isAvatarModalOpen, setAvatarModalOpen] = useState(false);

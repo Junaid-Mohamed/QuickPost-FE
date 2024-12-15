@@ -14,7 +14,7 @@ const BookmarkScreen:React.FC = () => {
     useEffect(()=>{
         const token = localStorage.getItem("QP-authToken") as string;
         dispatch(fetchBookmarkedPost({token})) 
-    },[])
+    },[dispatch])
 
     return(
         <div>

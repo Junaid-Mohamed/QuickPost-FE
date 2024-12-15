@@ -66,9 +66,9 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
         dispatch(fetchAllUsers({token}))
     },[dispatch])
 
-    console.log('allUsers',allUsers);
+    // console.log('allUsers',allUsers);
     const newFollowers = allUsers.filter((u)=> u.followings.length>0? !u.followings.some((follower)=>follower.followerId === user.id): true);
-    console.log('following data',newFollowers)
+    // console.log('following data',newFollowers)
     // const newFollowers = allUsers.filter((u)=> ) followingData
     return(
         <div className="bg-gray-100" >

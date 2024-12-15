@@ -13,6 +13,7 @@ import { AppDispatch, RootState } from "../redux/store";
 const HomeScreen = () => {
 
     const posts = useSelector((state:RootState)=> state.posts.posts)
+    const user = useSelector((state: RootState)=> state?.auth.user)
     const dispatch = useDispatch<AppDispatch>();
 
     const [filterModal,setFilterModal] = useState(false);
@@ -25,8 +26,8 @@ const HomeScreen = () => {
     
     // console.log(new Date(posts[1].createdAt));
     // console.log(getRelativeTime(posts[1].createdAt));
-
-    const postList = sortedPosts.length>0? sortedPosts : posts
+    const userFollowingPosts = posts.filter(post=> post.author.followings.length>0 ? post.author.followings.some((follower)=> { return follower.followerId === user.id}):false )
+    const postList = sortedPosts.length>0? sortedPosts : userFollowingPosts
     const handleSort = (criteria:string) => {
         setFilterModal(false);
         /**
@@ -35,7 +36,7 @@ const HomeScreen = () => {
          * If you don't spread the array, sorting would modify the posts array in place, which 
          * could lead to bugs if the same array is needed elsewhere in the component or app.
          */
-        const sorted = [...posts].sort((a,b)=>{
+        const sorted = [...userFollowingPosts].sort((a,b)=>{
             if(criteria === "trending"){
                 return b.likes - a.likes;
             }
