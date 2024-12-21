@@ -66,8 +66,19 @@ const QuickPostLayout: React.FC<QuickPostProps> = (props) => {
         dispatch(fetchAllUsers({token}))
     },[dispatch])
 
-    // console.log('allUsers',allUsers);
-    const newFollowers = allUsers.filter((u)=> u.followings.length>0? !u.followings.some((follower)=>follower.followerId === user.id): true);
+    // console.log('allUsers',allUsers.map(u=>u.followings));
+    const newFollowers = allUsers.filter((u) =>
+        Array.isArray(u.followings) && u.followings.length > 0
+          ? !u.followings.some((innerArray) =>
+              Array.isArray(innerArray) &&
+              innerArray.some(
+                (follower) => follower.followerId === user.id
+              )
+            )
+          : true
+      );
+    // console.log(newFollowers)
+    // const newFollowers = allUsers.filter((u)=> u.followings.length>0? !u.followings.some((follower:{followerId: string,followingId:string})=>{console.log(follower); return follower.followerId === user.id}): true);
     // console.log('following data',newFollowers)
     // const newFollowers = allUsers.filter((u)=> ) followingData
     return(

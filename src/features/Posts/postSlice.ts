@@ -15,6 +15,7 @@ export interface Post {
       lastName: string;
       email: string;
       profileImageURL: string | null;
+      followings: {followerId: string; followingId: string}[]
     };
     createdAt: string;
     updatedAt: string;

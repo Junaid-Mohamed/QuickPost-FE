@@ -2,15 +2,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUserFollower, User } from "../../features/User/userSlice";
 import { AppDispatch, RootState } from "../../redux/store";
 
+interface FollowerSuggestionCardProps{
+    user: User;
+}
 
 
-const FollowerSuggestionCard : React.FC<User> = ({user}) => {
+const FollowerSuggestionCard : React.FC<FollowerSuggestionCardProps> = ({user}) => {
 
     const dispatch = useDispatch<AppDispatch>();
     const token = localStorage.getItem('QP-authToken') as string
     const currentUser = useSelector((state:RootState)=> state.auth.user);
 
-    const handleFollowClick = (userId) => {
+    const handleFollowClick = (userId:string) => {
         dispatch(updateUserFollower({from:`${currentUser?.id}`,to:`${userId}`, follow: true, token}))
         window.location.reload();
     }

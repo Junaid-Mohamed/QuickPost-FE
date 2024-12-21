@@ -50,7 +50,7 @@ const UserProfileScreen:React.FC = () => {
       setIsFollowing(true);
         const token = localStorage.getItem("QP-authToken") as string;
         if(secondaryUser === null || userPosts === null){
-            dispatch(fetchSecondaryUser({userId, token}))
+            dispatch(fetchSecondaryUser({userId: userId || "", token}))
             dispatch(fetchUserPosts({userId:`${isCurrentUserProfile?`${user?.id}`:`${userId}`}`,token}));
         }
             dispatch(fetchUserPosts({userId:`${isCurrentUserProfile?`${user?.id}`:`${userId}`}`,token}));
@@ -59,10 +59,10 @@ const UserProfileScreen:React.FC = () => {
             // console.log(secondaryUser)
             if(status === "success" && location.pathname === `/profile/${userId}`){
                 const followingData = secondaryUser?.followings
-
-                const followinStatus =  followingData.length > 0 ? followingData.some((follower)=> follower.followerId === user.id): false;
+                // console.log(followingData)
+                const followingStatus =  followingData.length > 0 ? (Array.isArray(followingData) && followingData.some((follower)=> follower.followerId  === user.id)): false;
                 // console.log(followinStatus);
-                setIsFollowing(followinStatus);
+                setIsFollowing(followingStatus);
             }
     },[dispatch,secondaryUser])
 
@@ -76,7 +76,7 @@ const UserProfileScreen:React.FC = () => {
 
     const handleSave = () => {
         const img = user.profileImageURL;
-        dispatch(updateUserProfile({profileImage:img,bio,token}))
+        dispatch(updateUserProfile({profileImage:img||"",bio:bio||"",token}))
         setIsEditing(false);
         window.location.reload();
     }
@@ -85,7 +85,7 @@ const UserProfileScreen:React.FC = () => {
         // Implement API call to save avatar URL
         const userBio = user.bio;
         setProfileImg(avatarURL)
-        dispatch(updateUserProfile({profileImage:avatarURL,bio:userBio,token}))
+        dispatch(updateUserProfile({profileImage:avatarURL,bio:userBio||"",token}))
         setAvatarModalOpen(false);
 
         window.location.reload();
@@ -104,7 +104,7 @@ const UserProfileScreen:React.FC = () => {
                 <div>
                     {/* status === "success" &&  */}
                    {status === "success" ? (<div className="flex flex-col justify-between items-center">
-                        <img onClick={()=>isCurrentUserProfile && setAvatarModalOpen(true)} src={profileUser?.profileImageURL || `https://placehold.co/125?text=user`} alt={'user'} className="rounded-full cursor-pointer " width={125} height={150} />
+                        <img onClick={()=>isCurrentUserProfile && setAvatarModalOpen(true)} src={profileUser?.profileImageURL || `https://placehold.co/125?text=user` || profileImage } alt={'user'} className="rounded-full cursor-pointer " width={125} height={150} />
                         <h1 className="mt-4 text-2xl font-bold" >{profileUser?.firstName} {profileUser?.lastName}</h1>
                         <p className="text-gray-400" >  @{(profileUser?.firstName || "").toLowerCase()}{(profileUser?.lastName || "").toLowerCase()}</p>
                         <button onClick={()=> isCurrentUserProfile? setIsEditing(true): handleUpdateFollower()} className={`border mt-2 px-2 py-1 font-semibold ${isCurrentUserProfile?`border-gray-300`:`border-red-400 bg-red-400 text-white`} `} >{isCurrentUserProfile?`Edit Profile`:`${isFollowing?`Unfollow`:`Follow`}`}</button>
