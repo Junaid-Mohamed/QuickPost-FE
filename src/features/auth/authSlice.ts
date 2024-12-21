@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseURL } from "../../config/constants";
 import { Post } from "../Posts/postSlice";
-import { User } from "../User/userSlice";
+// import { User } from "../User/userSlice";
 
 export interface CurrentUser{
     id: string;
@@ -15,12 +15,21 @@ export interface CurrentUser{
     bookmarkedPosts: Post[]
 }
 
-const initialState = {
+// Define the initial state interface
+interface AuthState {
+    isAuthenticated: boolean;
+    user: CurrentUser | null;
+    status: "idle" | "loading" | "success" | "error";
+    error: string | null;
+  }
+  
+  // Initial state
+  const initialState: AuthState = {
     isAuthenticated: false,
-    user: {} as User,
+    user: null,
     status: "idle",
-    error: null as string | null
-}
+    error: null,
+  };
 
 export const fetchUser = createAsyncThunk<CurrentUser, string, {rejectValue:string}>(
     "user/getCurrentUser",
@@ -58,7 +67,7 @@ const authSlice = createSlice({
     extraReducers: (builder) =>{
         builder
         .addCase(fetchUser.pending, (state) => {
-          state.status = "loading..";
+          state.status = "loading";
         })
         .addCase(fetchUser.fulfilled, (state, action) => {
           state.status = "success";

@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { IoIosLogOut } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { clearUser } from "../features/Auth/authSlice";
+import { clearUser } from "../features/Auth/authSlice.ts";
 
 
 const Navbar: React.FC = () =>{
