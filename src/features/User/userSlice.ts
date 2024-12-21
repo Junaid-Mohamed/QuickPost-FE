@@ -8,6 +8,7 @@ import { Post, ThunkAPI } from "../Posts/postSlice";
 
 
 export interface User{
+    followings: string[];
     id: string;
     firstName: string;
     lastName?: string;
@@ -56,7 +57,7 @@ export const fetchAllUsers = createAsyncThunk<User[], {token:string}, {rejectVal
     }
 )
 
-export const fetchBookmarkedPost = createAsyncThunk<User[], {token: string},ThunkAPI>(
+export const fetchBookmarkedPost = createAsyncThunk<User, {token: string},ThunkAPI>(
     "users/fetchBookmarkedPosts", 
     async ({token}, {rejectWithValue} )=>{
         try{
@@ -65,7 +66,7 @@ export const fetchBookmarkedPost = createAsyncThunk<User[], {token: string},Thun
                 headers:{
                     Authorization: `Bearer ${token}`}
                 })
-            return response.data as User[];
+            return response.data as User;
         }catch(error){
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
@@ -76,7 +77,7 @@ export const fetchBookmarkedPost = createAsyncThunk<User[], {token: string},Thun
 )
 
 
-export const updateBookmarkedPost = createAsyncThunk<User[], {postId:string, isBookmarked:boolean, token: string},ThunkAPI>(
+export const updateBookmarkedPost = createAsyncThunk<User, {postId:string, isBookmarked:boolean, token: string},ThunkAPI>(
     "users/updateBookmarkedPosts", 
     async ({postId, isBookmarked, token}, {rejectWithValue} )=>{
         try{
@@ -88,7 +89,7 @@ export const updateBookmarkedPost = createAsyncThunk<User[], {postId:string, isB
                 headers:{
                     Authorization: `Bearer ${token}`}
                 })
-            return response.data as User[];
+            return response.data as User;
         }catch(error){
             if (error instanceof Error) {
                 return rejectWithValue(error.message);
@@ -139,9 +140,9 @@ export const updateUserFollower = createAsyncThunk<string,{from:string,to:string
 export const userSlice = createSlice({
     name:"user",
     initialState: {
-        user: null,
+        user: {} as User,
         allUsers: [] as User[],
-        secondaryUser:null,
+        secondaryUser:{} as User,
         bookmarkPosts: [] as Post[],
         status: "idle",
         error: null as string | null
@@ -225,7 +226,7 @@ export const userSlice = createSlice({
         .addCase(updateUserFollower.pending, (state) => {
           state.status = "loading..";
         })
-        .addCase(updateUserFollower.fulfilled, (state, action) => {
+        .addCase(updateUserFollower.fulfilled, (state) => {
           state.status = "success";   
         //    not using this action anywhere.
         // console.log(action.payload)

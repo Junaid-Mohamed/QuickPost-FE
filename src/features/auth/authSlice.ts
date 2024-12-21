@@ -1,6 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { baseURL } from "../../config/constants";
+import { Post } from "../Posts/postSlice";
+import { User } from "../User/userSlice";
 
 export interface CurrentUser{
     id: string;
@@ -9,11 +11,13 @@ export interface CurrentUser{
     lastName?:string;
     profileImageURL: string;
     bio?: string;
+    followings: [],
+    bookmarkedPosts: Post[]
 }
 
 const initialState = {
     isAuthenticated: false,
-    user: null,
+    user: {} as User,
     status: "idle",
     error: null as string | null
 }
